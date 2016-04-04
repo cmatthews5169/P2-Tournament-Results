@@ -14,4 +14,3 @@ Setup
 Running Test Cases
 
   Included in the tournament_file.py are a set of cases to verify that the program tournament.py is functioning correctly. To run these    test cases you can SSH into your server using BASH and issue the following command: "python tournament_test.py". If everything is        running normally you should see the outcome of the 10 test cases followed by "Success!  All tests pass!". 
-
