@@ -8,14 +8,15 @@ CREATE DATABASE tournament;
 -- Create TABLE players
 CREATE TABLE players (
         player_id serial PRIMARY KEY,
-        player_name varchar (30)
+        player_name varchar (30) NOT NULL
 );
 
 -- Create TABLE matches
 CREATE TABLE matches (
-        winner integer REFERENCES players(player_id),
-        loser integer REFERENCES players(player_id),
-        PRIMARY KEY (winner, loser)
+        winner INT REFERENCES players(player_id) ON DELETE CASCADE,
+        loser INT REFERENCES players(player_id) ON DELETE CASCADE,
+        PRIMARY KEY (winner, loser),
+        CHECK (winner <> loser)
 );
 
 -- Create VIEW player_standings
