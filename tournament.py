@@ -7,68 +7,64 @@
 import psycopg2
 
 # Return connection to database "tournament"
-def connect():
-    return psycopg2.connect("dbname=tournament")
+def connect(database_name="tournament"):
+    try:
+        db = psycopg2.connect("dbname={}".format(database_name))
+        cursor = db.cursor()
+        return db, cursor
+    except:
+        print("Could not create a connection to the database.")
 
 # Delete existing matches
 def deleteMatches():
-    db = connect()
-    c = db.cursor()
-    c.execute("DELETE FROM matches")
+    db, cursor = connect()
+    cursor.execute("DELETE FROM matches")
     db.commit()
     db.close()
 
 # Delete existing players
 def deletePlayers():
-    db = connect()
-    c = db.cursor()
-    c.execute("DELETE FROM players")
+    db, cursor = connect()
+    cursor.execute("DELETE FROM players")
     db.commit()
     db.close()
 
 # Count all registered players
 def countPlayers():
-    db = connect()
-    c = db.cursor()
-    c.execute("SELECT count(player_id) FROM players")
-    player_count = c.fetchall()[0][0]
+    db, cursor = connect()
+    cursor.execute("SELECT count(player_id) FROM players")
+    player_count = cursor.fetchone()[0]
     db.close()
     return(player_count);
 
 # Register a new player 
 def registerPlayer(name):
-    db = connect()
-    c = db.cursor()
-    c.execute("INSERT INTO players (player_name) VALUES (%s)",(name,))
+    db, cursor = connect()
+    cursor.execute("INSERT INTO players (player_name) VALUES (%s)",(name,))
     db.commit()
     db.close();
 
 # Return a list of players and win records sorted by wins. 
 def playerStandings():
-    db = connect()
-    c = db.cursor()
-    c.execute("SELECT * FROM player_standings")
-    standings = c.fetchall();
+    db, cursor = connect()
+    cursor.execute("SELECT * FROM player_standings")
+    standings = cursor.fetchall();
     db.close()
     return(standings);
 
 # Records the outcome of a match between two players
 def reportMatch(winner, loser):
-    db = connect()
-    c = db.cursor()
-    c.execute("INSERT INTO matches (winner, loser) VALUES (%s, %s)",(winner, loser,))
+    db, cursor = connect()
+    cursor.execute("INSERT INTO matches (winner, loser) VALUES (%s, %s)",(winner, loser,))
     db.commit()
     db.close()
 
 # Returns a list of pairs of players for the next round of a match
 def swissPairings():
-    db = connect()
-    c = db.cursor()
-    c.execute("SELECT player_id, player_name FROM player_standings;")
-    pairing_list = c.fetchall()
-    db.close()
+    pairing_list = playerStandings()
     pair = []
-    for i in range(0, len(pairing_list), 2):
-        next_pair = pairing_list[i][0], pairing_list[i][1], pairing_list[i+1][0], pairing_list[i+1][1]
-        pair.append(next_pair)
+    if (len(pairing_list) % 2 == 0):
+        for i in range(0, len(pairing_list), 2):
+            next_pair = pairing_list[i][0], pairing_list[i][1], pairing_list[i+1][0], pairing_list[i+1][1]
+            pair.append(next_pair)
     return pair
