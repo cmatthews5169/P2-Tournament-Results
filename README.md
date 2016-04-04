@@ -3,9 +3,7 @@ Project 2: Tournament Results (Python/PostgreSQL)
 
 Requirements 
 
-  To utilize the functions built within tournament.py you will need a server running the following:
-  -Python (Tested on version 2.7.6)
-  -PostgreSQL (Tested on version 9.3.1)
+  To utilize the functions built within tournament.py you will need a server running Python (Tested on version 2.7.6) and PostgreSQL (Tested on version 9.3.1).
   
 Setup
 
